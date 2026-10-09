@@ -1,0 +1,28 @@
+# Local Python environment and caches
+.venv/
+venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+
+# Datasets and dataset archives
+data/
+data_smoke/
+*.tar.gz
+*.zip
+
+# Training outputs
+outputs/
+checkpoints/
+*.pth
+*.pt
+*.npz
+fake_iter_*.png
+
+# Job logs
+*.out
+*.err
+*.log
+
+# Local secrets/configuration
+.env
