@@ -21,7 +21,8 @@ def parse_args():
     parser.add_argument('--manualSeed', type=int, help='manual seed')
     parser.add_argument('--netG', default='', help="path to netG (to continue training)")
     parser.add_argument('--netD', default='', help="path to netD (to continue training)")
-    
+    parser.add_argument('--resume', default='', help='path to a full training checkpoint, e.g. output/checkpoints/latest.pth')
+
     args = parser.parse_args()
 
     if args.imageSize != 64:
@@ -29,5 +30,8 @@ def parse_args():
 
     if args.nc != 3:
         parser.error("This data pipeline currently supports RGB images only: --nc 3.")
+
+    if args.resume and (args.netG or args.netD):
+        parser.error('--resume cannot be combined with --netG or --netD (weights-only).')
 
     return args

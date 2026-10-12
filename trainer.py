@@ -7,6 +7,8 @@ import torch
 import torchvision.utils as vutils
 from torch import nn, optim
 
+from checkpoint import load_checkpoint, save_checkpoint
+
 
 def train_gan(netG, netD, dataloader, device, args):
     criterion = nn.BCELoss()
@@ -22,6 +24,11 @@ def train_gan(netG, netD, dataloader, device, args):
     G_losses = []
     D_losses = []
     iters = 0
+    start_epoch = 0
+    if args.resume:
+        start_epoch, iters, G_losses, D_losses, fixed_noise = load_checkpoint(
+            args.resume, netG, netD, optimizerG, optimizerD, args, dataloader, device
+        )
 
     print("Starting Training Loop...")
     for epoch in range(args.niter):
@@ -105,6 +112,20 @@ def train_gan(netG, netD, dataloader, device, args):
             G_losses=G_losses,
             D_losses=D_losses
         )
-        print(f'Saved model states and losses for epoch {epoch + 1}.', flush=True)
-
+        save_checkpoint(
+            os.path.join(args.outf, "checkpoints", "latest.pth"),
+            epoch_completed=epoch + 1,
+            global_step=iters,
+            netG=netG,
+            netD=netD,
+            optimizerG=optimizerG,
+            optimizerD=optimizerD,
+            G_losses=G_losses,
+            D_losses=D_losses,
+            fixed_noise=fixed_noise,
+            args=args,
+            dataloader=dataloader,
+        )
+        print(f'Saved epoch {epoch + 1}, including full checkpoint.', flush=True)
+        
     print('Training complete. Outputs saved to:', os.path.abspath(args.outf))

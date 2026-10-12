@@ -17,13 +17,13 @@ def main():
     device = configure_runtime(args)
     dataloader = create_dataloader(args)
 
-    netG = Generator(ngpu=args.ngpu, nz=args.nz, nc=args.nc, ngf=args.ngf).to(device)
+    netG = Generator(nz=args.nz, nc=args.nc, ngf=args.ngf).to(device)
     netG.apply(weights_init)
     if args.netG != '':
         netG.load_state_dict(torch.load(args.netG, map_location=device, weights_only=True))
     print(netG)
 
-    netD = Discriminator(ngpu=args.ngpu, nc=args.nc, ndf=args.ndf).to(device)
+    netD = Discriminator(nc=args.nc, ndf=args.ndf).to(device)
     netD.apply(weights_init)
     if args.netD != '':
         netD.load_state_dict(torch.load(args.netD, map_location=device, weights_only=True))
